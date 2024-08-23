@@ -4,12 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOCUMENTATION</title>
+    
 </head>
 <body>
     <h1>Documentation Page</h1>
-    <p>Objection: To build the server-side component of a “movies” web application. The web
-        application will provide users with access to information about different
-        movies, directors, and genres. Users will be able to sign up, update their
-        personal information, and create a list of their favorite movies.</p>
+     
+        <table style="width:100%" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+              <th>Endpoint</th>
+              <th>Description</th>
+              <th>Method</th>
+              <th>Request Body </th>
+              <th>Expected Response</th>
+            </tr>
+            <tr>
+              <td>/movies</td>
+              <td>Get all movies</td>
+              <td>GET</td>
+              <td>n/a</td>
+              <td><pre>
+                {
+                    _id: ObjectId('66c35017d4ff32d7a3f5d8a5'),
+                    Title: "She's the Man",
+                    Description: `"She's the Man" is a modern adaptation of Shakespeare's "Twelfth Night," where a teenage girl disguises herself as her twin brother to join his soccer team. Directed by Andy Fickman, this film combines humor, romance, and sports in a delightful blend.`,
+                    Genre: {
+                      Name: 'Comedy',
+                      Description: 'This genre blends humor with romance and lighthearted situations, often with an emphasis on misunderstandings and disguises.'
+                    },
+                    Director: {
+                      Name: 'Andy Fickman',
+                      Bio: "Andy Fickman is an American director and producer known for his work in comedy and family films. His notable works include 'She's the Man' and 'Race to Witch Mountain.'",
+                      Birth: '1970',
+                      Death: 'Present'
+                    },
+                    ImagePath: 'images/shestheman_image.jpg',
+                    Featured: true
+                  }
+                ...
+                </pre>
+              </td>
+            </tr>
+
+            <tr>
+                <td>/users</td>
+                <td>Get all users</td>
+                <td>GET</td>
+                <td>
+                       n/a
+                </td>
+                <td>
+                    <pre>
+                        {
+                            "_id": "AUTO_GENERATED_ID",
+                            "Username": "johndoe123",
+                            "Email": "johndoe@example.com",
+                            "Birthday": "1985-02-19T00:00:00.000Z",
+                            "Password": "securepassword1",
+                            "FavoriteMovies": [
+                                "66c34f5cd4ff32d7a3f5d89e",
+                                "66c34e5fd4ff32d7a3f5d89c",
+                                "66c34ec5d4ff32d7a3f5d89d",
+                                "66c35017d4ff32d7a3f5d8a5"
+                            ]
+                        }
+                    </pre>
+                </td>
+            </tr>
+            <tr>
+              <td>/users/:Username</td>
+              <td>Get a user by username</td>
+              <td>GET</td>
+              <td><pre>
+                      n/a
+                  </pre>
+              </td>
+              <td>
+                  <pre>
+                      {
+                          _id: "AUTO_GENERATED_ID"
+                          Username: "jondoe",
+                          Password: "ENCRYPTED_PASSWORD",
+                          Birthday: "0101/01",
+                          Email: "johndoe@mail.com"
+                      }
+                  </pre>
+              </td>
+          </tr>
+            <tr>
+              <td>/users</td>
+              <td>Add a user</td>
+              <td>POST</td>
+              <td><pre>
+                      {
+                          Username: "jondoe",
+                          Password: "password",
+                          Birthday: "0101/01",
+                          Email: "johndoe@mail.com"
+                      }
+                  </pre>
+              </td>
+              <td>
+                  <pre>
+                      {
+                          _id: "AUTO_GENERATED_ID"
+                          Username: "jondoe",
+                          Password: "ENCRYPTED_PASSWORD",
+                          Birthday: "0101/01",
+                          Email: "johndoe@mail.com"
+                      }
+                  </pre>
+              </td>
+          </tr>
+        <tr>
+          <td>/users/:Username</td>
+          <td>Update a user's info by username</td>
+          <td>PUT</td>
+          <td><pre>
+                {
+                  "Username": "johndoe123",
+                  "Password": "1234",
+                  "Birthday": "1985-02-19T00:00:00.000Z",
+                  "Email": "johndoe@example.com",
+                 }
+              </pre>
+          </td>
+          <td>
+              <pre>
+                  {
+                      "_id": "66c35321d4ff32d7a3f5d8a6",
+                      "Username": "johndoe123",
+                      "Email": "johndoe@example.com",
+                      "Birthday": "1985-02-19T00:00:00.000Z",
+                      "Password": "1234",
+                      "FavoriteMovies": [
+                          "66c34f5cd4ff32d7a3f5d89e",
+                          "66c34e5fd4ff32d7a3f5d89c",
+                          "66c34ec5d4ff32d7a3f5d89d",
+                          "66c35017d4ff32d7a3f5d8a5"
+                      ]
+                  }
+              </pre>
+          </td>
+      </tr>
+      <tr>
+        <td>/users/:Username/movies/:MovieID</td>
+        <td>Add a movie to a user's list of movies</td>
+        <td>POST</td>
+        <td>
+              n/a??
+        </td>
+        <td>
+            <pre>
+              {
+                "_id": "66c35321d4ff32d7a3f5d8a6",
+                "Username": "johndoe123",
+                "Email": "johndoe@example.com",
+                "Birthday": "1985-02-19T00:00:00.000Z",
+                "Password": "1234",
+                "FavoriteMovies": [
+                    "66c34f5cd4ff32d7a3f5d89e",
+                    "66c34e5fd4ff32d7a3f5d89c",
+                    "66c34ec5d4ff32d7a3f5d89d",
+                    "66c35017d4ff32d7a3f5d8a5",
+                    "66c34fd7d4ff32d7a3f5d89f"
+                ]
+            }
+            </pre>
+        </td>
+    </tr>
+    <tr>
+      <td>/users/:Username</td>
+      <td>Delete a user by username</td>
+      <td>DELETE</td>
+      <td>
+            n/a??
+      </td>
+      <td>
+          <pre>
+            johndoe123 was deleted.
+          </pre>
+      </td>
+  </tr>
+          </table>
 </body>
 </html>
