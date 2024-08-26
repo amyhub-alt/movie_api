@@ -13,6 +13,7 @@
             <tr>
               <th>Endpoint</th>
               <th>Description</th>
+              <th>Params</th>
               <th>Method</th>
               <th>Request Body </th>
               <th>Expected Response</th>
@@ -20,6 +21,7 @@
             <tr>
               <td>/movies</td>
               <td>Get all movies</td>
+              <td>N/A</td>
               <td>GET</td>
               <td>n/a</td>
               <td><pre>
@@ -48,6 +50,7 @@
             <tr>
                 <td>/users</td>
                 <td>Get all users</td>
+                <td>N/A</td>
                 <td>GET</td>
                 <td>
                        n/a
@@ -73,6 +76,7 @@
             <tr>
               <td>/users/:Username</td>
               <td>Get a user by username</td>
+              <td>Username : jondoe</td>
               <td>GET</td>
               <td><pre>
                       n/a
@@ -93,6 +97,7 @@
             <tr>
               <td>/users</td>
               <td>Add a user</td>
+              <td>N/A</td>
               <td>POST</td>
               <td><pre>
                       {
@@ -118,6 +123,7 @@
         <tr>
           <td>/users/:Username</td>
           <td>Update a user's info by username</td>
+          <td>Username: johndoe123</td>
           <td>PUT</td>
           <td><pre>
                 {
@@ -149,9 +155,10 @@
       <tr>
         <td>/users/:Username/movies/:MovieID</td>
         <td>Add a movie to a user's list of movies</td>
+        <td>Username: johndoe123, MovieID: 66c34fd7d4ff32d7a3f5d89f</td>
         <td>POST</td>
         <td>
-              n/a??
+              n/a
         </td>
         <td>
             <pre>
@@ -173,11 +180,40 @@
         </td>
     </tr>
     <tr>
+        <td>/users/:Username/movies/:MovieID</td>
+        <td>Remove a movie to a user's list of movies</td>
+        <td>Username: johndoe123, MovieID: 66c34fd7d4ff32d7a3f5d89f</td>
+        <td>DELETE</td>
+        <td>
+              n/a
+        </td>
+        <td>
+            <pre>
+              {
+                "_id": "66c35321d4ff32d7a3f5d8a6",
+                "Username": "johndoe123",
+                "Email": "johndoe@example.com",
+                "Birthday": "1985-02-19T00:00:00.000Z",
+                "Password": "1234",
+                "FavoriteMovies": [
+                    "66c34f5cd4ff32d7a3f5d89e",
+                    "66c34e5fd4ff32d7a3f5d89c",
+                    "66c34ec5d4ff32d7a3f5d89d",
+                    "66c35017d4ff32d7a3f5d8a5",
+         
+                ]
+            }
+            </pre>
+        </td>
+    </tr>
+
+    <tr>
       <td>/users/:Username</td>
       <td>Delete a user by username</td>
+      <td>Username: johndoe123</td>
       <td>DELETE</td>
       <td>
-            n/a??
+            n/a
       </td>
       <td>
           <pre>
@@ -185,6 +221,73 @@
           </pre>
       </td>
   </tr>
+  <tr>
+    <td>/genre/:Name</td>
+    <td>Return data about a genre by name</td>
+    <td>Name: Drama</td>
+    <td>GET</td>
+    <td>
+          n/a
+    </td>
+    <td>
+        <pre>
+            {
+                "Genre": "Drama",
+                "Description": "This genre features high-stakes action sequences and intense suspense, often involving revenge, justice, and battles."
+            }
+        </pre>
+    </td>
+</tr>
+<tr>
+    <td>/movies/director/:name</td>
+    <td>Return data about a director (Name, Bio, Birth, Death)</td>
+    <td>Name: Quentin Tarantino</td>
+    <td>GET</td>
+    <td>
+          n/a
+    </td>
+    <td>
+        <pre>
+            {
+                "name": "Quentin Tarantino",
+                "bio": "Quentin Tarantino is an American director known for his unique style and films like Pulp Fiction and Kill Bill. His work features sharp dialogue and nonlinear storytelling.",
+                "birth": "1963",
+                "death": "Present"
+            }
+        </pre>
+    </td>
+</tr>
+<tr>
+    <td>/movies/:title</td>
+    <td>- [ ] Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user</td>
+    <td>Title: Kill Bill</td>
+    <td>GET</td>
+    <td>
+          n/a
+    </td>
+    <td>
+        <pre>
+            {
+                "Genre": {
+                    "Name": "Drama",
+                    "Description": "This genre features high-stakes action sequences and intense suspense, often involving revenge, justice, and battles."
+                },
+                "Director": {
+                    "Name": "Quentin Tarantino",
+                    "Bio": "Quentin Tarantino is an American director known for his unique style and films like Pulp Fiction and Kill Bill. His work features sharp dialogue and nonlinear storytelling.",
+                    "Birth": "1963",
+                    "Death": "Present"
+                },
+                "Actors": [],
+                "_id": "66c34e5fd4ff32d7a3f5d89c",
+                "Title": "Kill Bill",
+                "Description": "Kill Bill is a revenge action film where The Bride, a former assassin, seeks vengeance against her ex-colleagues and boss after being betrayed and left for dead.",
+                "ImagePath": "images/killbill_image.jpg",
+                "Featured": true
+            }
+        </pre>
+    </td>
+</tr>
           </table>
 </body>
 </html>
