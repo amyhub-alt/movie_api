@@ -137,8 +137,8 @@ app.post('/users/:Username/movies/:MovieID', async (req, res) => {
   });
 });
 
-// Remove a movie on a user's list of favorites- NOT WORKING
-app.post('/users/:Username/movies/:MovieID', (req, res) => {
+// Remove a movie on a user's list of favorites- 
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
  Users.findOneAndUpdate({ Username: req.params.Username }, {
      $pull: { FavoriteMovies: req.params.MovieID }
    },
