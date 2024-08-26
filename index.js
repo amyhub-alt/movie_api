@@ -137,6 +137,22 @@ app.post('/users/:Username/movies/:MovieID', async (req, res) => {
   });
 });
 
+// Remove a movie on a user's list of favorites- NOT WORKING
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+ Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $pull: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }) // This line makes sure that the updated document is returned
+  .then((updatedUser) => {
+    res.json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
+});
+
+
 // Delete a user by username
 app.delete('/users/:Username', (req, res) => {
    Users.findOneAndDelete({ Username: req.params.Username })
@@ -169,7 +185,7 @@ app.get('/movies', (req, res) => {
 
 
 
-// Get a movie by title
+// Get a movie by title-WORKS
 app.get('/movies/:title',  (req, res) => {
   Movies.findOne({ Title: req.params.title })
     .then((movie) => {
@@ -181,21 +197,10 @@ app.get('/movies/:title',  (req, res) => {
     });
 });
 
-// // // Return titles of movies by genre name
-// app.get('/movies/genre/:genre', (req, res) => {
-//   const genre = req.params.genre;
-//   const moviesByGenre = topMovies.filter(movie => movie.genre.toLowerCase().includes(genre.toLowerCase()));
-//   if (moviesByGenre.length > 0) {
-//     const movieGenres = moviesByGenre.map(movie => movie.title);
-//     res.json(movieGenres);
-//   } else {
-//     res.status(404).send('No movies found for this genre');
-//   }
-// });
 
 
 
-// Get information about a genre by name-  NOT WORKING
+// Get information about a genre by name-  
 app.get('/genre/:Name', (req, res) => {
   Movies.findOne({ 'Genre.Name': req.params.Name })
     .then((movie) => {
@@ -219,16 +224,16 @@ app.get('/genre/:Name', (req, res) => {
 
 
 
-//Return data about a director (bio, birth year, death year) by name;//NOT WORKING
+//Return data about a director (bio, birth year, death year) by name;//
 app.get('/movies/director/:name', (req,res) => {
- Movies.findOne({ 'director.name': req.params.name })
+ Movies.findOne({ 'Director.Name': req.params.name })
  .then ((movie) => {
   if (movie) {
     res.json({
-      name: movie.director.name,
-      bio: movie.director.bio,
-      birth_year: movie.director.birth,
-      death_year: movie.director.death
+      name: movie.Director.Name,
+      bio: movie.Director.Bio,
+      birth: movie.Director.Birth,
+      death: movie.Director.Death
     });
   } else {
     res.status(404).send('Director not found');
