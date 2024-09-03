@@ -27,6 +27,7 @@ module.exports = (router) => {
             if (error) {
                 res.send(error);
             }
+            // Encode the user Object into a token
             let token = generateJWTToken(user.toJSON());
             return res.json({user, token});
         });

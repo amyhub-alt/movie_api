@@ -4,6 +4,8 @@ const app = express();
 morgan = require('morgan');
 uuid = require('uuid');
 const bodyParser = require('body-parser')
+const { check, validationResult } = require('express-validator');
+
 
 //these lines require mongoose package and models.js file as well as the models to refer to the model names i defines in the models.js
 const mongoose = require('mongoose');
@@ -23,6 +25,10 @@ app.use(bodyParser.urlencoded({  // encodes url automatically
     extended: true
   }));
 
+const cors = require('cors');
+app.use(cors());
+
+
 let auth = require('./auth')(app);
 
 const passport = require('passport');
@@ -35,6 +41,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
+// check('Username', 'Username contains non-alphanumeric characters - not allowed.').isAlphanumeric()
 
 
 // // GET requests
@@ -60,34 +67,55 @@ app.get('/users',  (req, res) => {
 });
 
 
-//Add a user
-/* We’ll expect JSON in this format
-{ID: Integer, Username: String, Password: String, Email: String, Birthday: Date}*/
-app.post('/users', (req, res) => {
-  Users.findOne({ Username: req.body.Username })
-    .then((user) => {
-      if (user) {
-        return res.status(400).send(req.body.Username + 'already exists');
-      } else {
-        Users.create({
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday
-          })
-          .then((user) =>{
-            res.status(201).json(user) })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send('Error: ' + error);
-        })
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
-});
+//ADD A USER
+app.post('/users',
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], async (req, res) => {
+
+  // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+      .then((user) => {
+        if (user) {
+          //If the user is found, send a response that it already exists
+          return res.status(400).send(req.body.Username + ' already exists');
+        } else {
+          Users
+            .create({
+              Username: req.body.Username,
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            })
+            .then((user) => { res.status(201).json(user) })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  });
+
+
 
 // Get a user by username
 app.get('/users/:Username', async (req, res) => {
@@ -292,8 +320,13 @@ app.get('/movies/director/:name', (req,res) => {
 
 // listen for requests
 
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+// app.listen(8080, () => {
+//   console.log('Your app is listening on port 8080.');
+// });
+
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
 
 // methodOverride = require('method-override');
