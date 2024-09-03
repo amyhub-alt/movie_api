@@ -1,4 +1,5 @@
 const mongoose = require ('mongoose');
+const bcrypt = require('bcrypt');
 
 //schema is defined through a set of keys and values that will dicate the format for documents of a certian collection
 let movieSchema = mongoose.Schema({
@@ -26,6 +27,15 @@ let userSchema = mongoose.Schema({
     Birthday: Date,
     FavoriteMovies: [{type: mongoose.Schema.Types.ObjectId,ref: 'Movie'}]
 });
+
+userSchema.statics.hashPassword = (password) => {
+    return bcrypt.hashSync(password, 10);
+};
+
+userSchema.methods.validatePassword = function (password) {
+    return bcrypt.compareSync(password, this.Password);
+};
+
 
 
 //documents have been defined in each the movie and user colelctions
