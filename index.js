@@ -80,10 +80,8 @@ app.post('/users',
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ], async (req, res) => {
-
   // check the validation object for errors
     let errors = validationResult(req);
-
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
@@ -130,54 +128,77 @@ app.get('/users/:Username', async (req, res) => {
 });
 
 // Update a user's info, by username
-/* We’ll expect JSON in this format
-{Username: String,(required) Password: String,(required)Email: String,(required)Birthday: Date}*/
-// app.put('/users/:Username', (req, res) => {
-//   Users.findOneAndUpdate(
-//     { Username: req.params.Username }, 
-//     { 
-//       $set:{
-//       Username: req.body.Username,
-//       Password: req.body.Password,
-//       Email: req.body.Email,
-//       Birthday: req.body.Birthday
-//     }
+// app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+//   // CONDITION TO CHECK ADDED HERE
+//   if(req.user.Username !== req.params.Username){
+//       return res.status(400).send('Permission denied');
+//   }
+//   // CONDITION ENDS
+//   await Users.findOneAndUpdate({ Username: req.params.Username }, {
+//       $set:
+//       {
+//           Username: req.body.Username,
+//           Password: req.body.Password,
+//           Email: req.body.Email,
+//           Birthday: req.body.Birthday
+//       }
 //   },
-//   { new: true }) // This line makes sure that the updated document is returned
-//   .then((updatedUser) => {
-//     res.json(updatedUser);
-//   })
-//   .catch((err) => {
-//     console.error(err);
-//     res.status(500).send('Error: ' + err);
-//   })
-
+//       { new: true }) // This line makes sure that the updated document is returned
+//       .then((updatedUser) => {
+//           res.json(updatedUser);
+//       })
+//       .catch((err) => {
+//           console.log(err);
+//           res.status(500).send('Error: ' + err);
+//       })
 // });
+// UPDATE USER DATA
+app.put('/users/:Username', 
+  [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], 
+  passport.authenticate('jwt', { session: false }), 
+  async (req, res) => {
+    // Check the validation object for errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
 
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  // CONDITION TO CHECK ADDED HERE
-  if(req.user.Username !== req.params.Username){
+    // CONDITION TO CHECK ADDED HERE
+    if (req.user.Username !== req.params.Username) {
       return res.status(400).send('Permission denied');
-  }
-  // CONDITION ENDS
-  await Users.findOneAndUpdate({ Username: req.params.Username }, {
-      $set:
+    }
+    // CONDITION ENDS
+
+    // Hash the password if it's being updated
+    let hashedPassword = req.body.Password ? Users.hashPassword(req.body.Password) : undefined;
+
+    await Users.findOneAndUpdate(
+      { Username: req.params.Username },
       {
+        $set: {
           Username: req.body.Username,
-          Password: req.body.Password,
+          Password: hashedPassword || req.user.Password, // Use the hashed password if provided, else keep the current one
           Email: req.body.Email,
           Birthday: req.body.Birthday
-      }
-  },
-      { new: true }) // This line makes sure that the updated document is returned
+        }
+      },
+      { new: true } // This line makes sure that the updated document is returned
+    )
       .then((updatedUser) => {
-          res.json(updatedUser);
+        res.json(updatedUser);
       })
       .catch((err) => {
-          console.log(err);
-          res.status(500).send('Error: ' + err);
-      })
-});
+        console.log(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
 
 
 // Add a movie to a user's list of favorites
