@@ -21,7 +21,7 @@ app.use(morgan('common'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+ 
 app.use(bodyParser.urlencoded({  // encodes url automatically
     extended: true
   }));
