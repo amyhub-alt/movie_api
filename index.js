@@ -13,7 +13,8 @@ const Models = require ('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
-mongoose.connect('mongodb://localhost:27017/cfDB');
+// mongoose.connect('mongodb://localhost:27017/cfDB');
+mongoose.connect('mongodb+srv://altiefermann:T6SbXuLrbATpeeQY@cluster0.nhctskx.mongodb.net/cfDB')
 
 // // middlewares
 app.use(morgan('common'));
