@@ -170,9 +170,9 @@ app.put('/users/:Username',
     }
 
     // CONDITION TO CHECK ADDED HERE
-    if (req.user.Username !== req.params.Username) {
-      return res.status(400).send('Permission denied');
-    }
+    // if (req.user.Username !== req.params.Username) {
+    //   return res.status(400).send('Permission denied');
+    // }
     // CONDITION ENDS
 
     // Hash the password if it's being updated
