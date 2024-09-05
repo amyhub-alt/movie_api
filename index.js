@@ -9,7 +9,7 @@ const { check, validationResult } = require('express-validator');
 
 //these lines require mongoose package and models.js file as well as the models to refer to the model names i defines in the models.js
 const mongoose = require('mongoose');
-const Models = require ('./models.js');
+const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
