@@ -14,7 +14,8 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 // mongoose.connect('mongodb://localhost:27017/cfDB');
-mongoose.connect('mongodb+srv://altiefermann:T6SbXuLrbATpeeQY@cluster0.nhctskx.mongodb.net/cfDB')
+// mongoose.connect('mongodb+srv://altiefermann:T6SbXuLrbATpeeQY@cluster0.nhctskx.mongodb.net/cfDB')
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // // middlewares
 app.use(morgan('common'));
