@@ -56,6 +56,7 @@ app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
+
 // Get all users
 app.get('/users',  (req, res) => {
   Users.find()
