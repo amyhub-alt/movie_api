@@ -158,9 +158,6 @@ app.get('/users/:Username', async (req, res) => {
 // UPDATE USER DATA
 app.put('/users/:Username', 
   [
-    check('Username', 'Username is required').isLength({ min: 5 }),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ], 
   passport.authenticate('jwt', { session: false }), 
@@ -184,8 +181,6 @@ app.put('/users/:Username',
       { Username: req.params.Username },
       {
         $set: {
-          Username: req.body.Username,
-          Password: hashedPassword || req.user.Password, // Use the hashed password if provided, else keep the current one
           Email: req.body.Email,
           Birthday: req.body.Birthday
         }
