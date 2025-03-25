@@ -27,9 +27,27 @@ app.use(bodyParser.urlencoded({  // encodes url automatically
     extended: true
   }));
 
-const cors = require('cors');
-app.use(cors());
+// const cors = require('cors');
+// app.use(cors());
 
+const cors = require('cors');
+let allowedOrigins = [
+  'http://localhost:8080', 
+  'http://testsite.com', 
+  'http://localhost:1234', 
+  'https://dynamic-phoenix-7d9a80.netlify.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 let auth = require('./auth')(app);
 
@@ -158,6 +176,9 @@ app.get('/users/:Username', async (req, res) => {
 // UPDATE USER DATA
 app.put('/users/:Username', 
   [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ], 
   passport.authenticate('jwt', { session: false }), 
@@ -181,6 +202,8 @@ app.put('/users/:Username',
       { Username: req.params.Username },
       {
         $set: {
+          Username: req.body.Username,
+          Password: hashedPassword || req.user.Password, // Use the hashed password if provided, else keep the current one
           Email: req.body.Email,
           Birthday: req.body.Birthday
         }
@@ -310,7 +333,7 @@ app.get('/genre/:Name', (req, res) => {
     });
 });
 
-
+//this is a test
 
 
 
