@@ -72,11 +72,7 @@ app.get('/users',  (req, res) => {
 
 //ADD A USER
 app.post('/users',
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
+
   [
     check('Username', 'Username is required').isLength({min: 5}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
@@ -130,31 +126,7 @@ app.get('/users/:Username', async (req, res) => {
     });
 });
 
-// Update a user's info, by username
-// app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
-//   // CONDITION TO CHECK ADDED HERE
-//   if(req.user.Username !== req.params.Username){
-//       return res.status(400).send('Permission denied');
-//   }
-//   // CONDITION ENDS
-//   await Users.findOneAndUpdate({ Username: req.params.Username }, {
-//       $set:
-//       {
-//           Username: req.body.Username,
-//           Password: req.body.Password,
-//           Email: req.body.Email,
-//           Birthday: req.body.Birthday
-//       }
-//   },
-//       { new: true }) // This line makes sure that the updated document is returned
-//       .then((updatedUser) => {
-//           res.json(updatedUser);
-//       })
-//       .catch((err) => {
-//           console.log(err);
-//           res.status(500).send('Error: ' + err);
-//       })
-// });
+
 // UPDATE USER DATA
 app.put('/users/:Username', 
   [
@@ -167,12 +139,6 @@ app.put('/users/:Username',
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-
-    // CONDITION TO CHECK ADDED HERE
-    // if (req.user.Username !== req.params.Username) {
-    //   return res.status(400).send('Permission denied');
-    // }
-    // CONDITION ENDS
 
     // Hash the password if it's being updated
     let hashedPassword = req.body.Password ? Users.hashPassword(req.body.Password) : undefined;
@@ -214,6 +180,8 @@ app.post('/users/:Username/movies/:MovieID', async (req, res) => {
   });
 });
 
+
+
 // Remove a movie on a user's list of favorites- 
 app.delete('/users/:Username/movies/:MovieID', (req, res) => {
  Users.findOneAndUpdate({ Username: req.params.Username }, {
@@ -246,19 +214,7 @@ app.delete('/users/:Username', (req, res) => {
     });
 });
 
-///////
 
-// Get all movies
-// app.get('/movies', (req, res) => {
-//   Movies.find()
-//    .then((movies) => {
-//      res.status(201).json(movies);
-//    })
-//    .catch((err) => {
-//      console.error(err);
-//      res.status(500).send('Error: ' + err);
-//    });
-// });
 
 
 //get all movies but they have to be authenicated
@@ -310,7 +266,6 @@ app.get('/genre/:Name', (req, res) => {
     });
 });
 
-//this is a test
 
 
 
